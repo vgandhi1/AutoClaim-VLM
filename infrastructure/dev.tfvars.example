@@ -1,0 +1,7 @@
+project                         = "claimlens"
+environment                     = "dev"
+aws_region                      = "us-east-1"
+raw_bucket_name                 = "claimlens-raw-dev-ACCOUNT"
+processed_bucket_name           = "claimlens-processed-dev-ACCOUNT"
+opensource_raw_bucket_name      = "vehicle-damage-opensource-raw-ACCOUNT"
+opensource_processed_bucket_name = "vehicle-damage-opensource-processed-ACCOUNT"
