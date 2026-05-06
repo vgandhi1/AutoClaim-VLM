@@ -9,6 +9,16 @@
 
 *From raw image to structured, routable damage intelligence — in under 90 seconds.*
 
+#### Data & AI analytics highlights
+
+| Lens | What this project delivers |
+|------|----------------------------|
+| **Application** | **Insurance / fleet claims triage**: turn raw damage photos into **schema-valid JSON** routed by severity and confidence to repair workflows, ERP, or human adjusters—not just offline scoring. |
+| **Multimodal AI** | **VLM inference** (SageMaker-hosted; PaliGemma-class stack) produces **damage class, severity, zones, estimates, and routing actions** suitable for SLA-driven automation. |
+| **Data engineering & warehouse analytics** | **AWS Glue (PySpark)** preprocessing, curated **S3** zones, loads to **Redshift** (+ **DynamoDB** hot index)—supports **dimensions/facts**, historical trends, and adjuster-vs-model outcomes over time. |
+| **Operational intelligence** | **QuickSight-ready** aggregates, pipeline stage metrics (**throughput, latency p95/p99, error rates**), **VLM confidence** monitoring, DLQ/zero-tolerance alerting—closes the loop between model behavior and business KPIs. |
+| **Data quality & lineage** | **Great Expectations**, JSON Schema validation before writes, enrichment hooks (e.g., VIN/repair APIs), and catalogs/migrations oriented to reproducible analytics and audits. |
+
 <br/>
 
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
@@ -35,9 +45,9 @@ Raw Image Upload  →  Glue Preprocessing  →  VLM Classification  →  Redshif
 
 ## What is ClaimLens?
 
-**ClaimLens** is a production-grade, AWS-native ETL pipeline that ingests vehicle damage images from any source — mobile apps, dealer kiosks, IoT cameras — and produces structured, enterprise-ready damage assessments using a fine-tuned Vision Language Model (VLM).
+**ClaimLens** is a production-grade, AWS-native **ETL + analytics-oriented** pipeline that ingests vehicle damage images from any source — mobile apps, dealer kiosks, IoT cameras — and produces structured, enterprise-ready damage assessments using a Vision Language Model (VLM). The same pipeline feeds **warehouse tables and operational metrics**, so claims volume, severity mix, confidence calibration, and stage latency can be monitored like any other **Data & AI** product.
 
-It replaces the traditional 2–5 day human adjuster review cycle with a sub-90-second automated pipeline that outputs typed JSON damage records directly routable to repair workflows, SAP ERP systems, and claims management platforms.
+It replaces parts of the traditional 2–5 day human adjuster review cycle with a sub-90-second automated path that outputs typed JSON damage records directly routable to repair workflows, SAP ERP systems, and claims management platforms.
 
 ### Key Numbers
 
