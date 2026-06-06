@@ -36,6 +36,7 @@ def process_manifest_row(
     raw_bucket: str,
     processed_bucket: str,
     s3_client: Any,
+    seen_phashes: set[str] | None = None,
 ) -> dict[str, Any]:
     source_dataset = raw.get("source_dataset", "unknown")
     image_key = raw["image_s3_key"]
@@ -48,6 +49,10 @@ def process_manifest_row(
 
     ok, reason, metrics = passes_quality_gates(img)
     phash = perceptual_hash_bits(img)
+    if seen_phashes is not None:
+        if phash in seen_phashes:
+            return {"status": "rejected", "reason": "duplicate_phash", **raw, **metrics}
+        seen_phashes.add(phash)
     if not ok:
         return {"status": "rejected", "reason": reason, **raw, **metrics}
 
@@ -79,13 +84,16 @@ def process_manifest_row(
 
 def run_local_manifest(manifest_path: str, raw_bucket: str, processed_bucket: str) -> None:
     s3 = boto3.client("s3")
+    seen_phashes: set[str] = set()
     with open(manifest_path, encoding="utf-8") as handle:
         for line in handle:
             line = line.strip()
             if not line:
                 continue
             row = json.loads(line)
-            result = process_manifest_row(row, raw_bucket, processed_bucket, s3)
+            result = process_manifest_row(
+                row, raw_bucket, processed_bucket, s3, seen_phashes=seen_phashes
+            )
             print(json.dumps(result))
 
 

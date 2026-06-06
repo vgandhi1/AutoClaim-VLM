@@ -161,6 +161,26 @@ AutoClaim-VLM is designed to fine-tune PaliGemma 3B on a consolidated corpus of 
 
 ---
 
+## Implementation Status
+
+| Component | Status | Entrypoint |
+|-----------|--------|------------|
+| Image QA + resize (640×640, blur, pHash) | **Implemented** | `src/opensourceingest/image_quality.py` |
+| Open-source download + normalize | **Implemented** | `src/opensourceingest/` |
+| Manifest consolidation worker | **Implemented** | `src/glue/opensource_consolidation.py` |
+| VLM schema validation + routing gate | **Implemented** | `src/claimlens/vlm_gate.py` |
+| Operational claim preprocessing | **Partial** | `src/claimlens/processing.py` |
+| Glue Spark orchestration | **Stub** | `src/glue/vehicle_damage_preprocess.py` |
+| SageMaker VLM training | **Stub** | `src/sagemaker/train.py` |
+| SageMaker VLM inference | **Stub** | `src/sagemaker/inference.py` |
+| Lambda enrichment / merge | **Stub** | `src/lambda/claim_enrichment/`, `claim_merge/` |
+| Full Terraform stack (SQS, Lambda, SageMaker, Redshift) | **Planned** | `infrastructure/main.tf` (S3 buckets only today) |
+| Notebooks, ADRs, runbooks in tree below | **Planned** | Not yet in repo |
+
+> Metrics in **Key Numbers** are design targets unless explicitly measured in a release note.
+
+---
+
 ## Repository Structure
 
 ```

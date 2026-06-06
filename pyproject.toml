@@ -11,4 +11,4 @@ pythonpath = ["src"]
 testpaths = ["tests"]
 
 [tool.coverage.run]
-source = ["src"]
+source = ["claimlens", "opensourceingest"]

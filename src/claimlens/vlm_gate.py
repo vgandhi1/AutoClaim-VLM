@@ -26,7 +26,14 @@ def validate_vlm_output(data: dict[str, Any]) -> None:
     jsonschema.validate(instance=data, schema=_load_schema())
 
 
-def pipeline_action_from_vlm(confidence: float, severity: str) -> str:
+def pipeline_action_from_vlm(
+    confidence: float,
+    severity: str,
+    *,
+    total_loss_risk: bool = False,
+) -> str:
+    if total_loss_risk:
+        return "ROUTE_TO_ADJUSTER"
     sev = severity.upper()
     if confidence >= 0.90 and sev in {"MINOR", "COSMETIC"}:
         return "AUTO_APPROVE"
@@ -44,7 +51,11 @@ def route_vlm_output(data: dict[str, Any]) -> str:
     record is schema-valid before it is acted on or persisted.
     """
     validate_vlm_output(data)
-    return pipeline_action_from_vlm(data["confidence"], data["severity"])
+    return pipeline_action_from_vlm(
+        data["confidence"],
+        data["severity"],
+        total_loss_risk=bool(data.get("total_loss_risk", False)),
+    )
 
 
 def _main() -> int:
