@@ -43,7 +43,12 @@ def ingest_kaggle_dataset(ds: dict[str, str], bucket: str, s3_client: Any) -> in
         )
 
         records: list[dict[str, Any]] = []
-        for img_path in download_path.rglob("*.jpg"):
+        image_paths = sorted(
+            p
+            for p in download_path.rglob("*")
+            if p.suffix.lower() in {".jpg", ".jpeg", ".png"}
+        )
+        for img_path in image_paths:
             folder = img_path.parent.name
             s3_key = f"{ds['name']}/{folder}/{img_path.name}"
             s3_client.upload_file(str(img_path), bucket, s3_key)

@@ -154,8 +154,12 @@ def normalize_record(
         base["damage_severity"] = mapping.get("severity", "MODERATE")
         adj = float(mapping.get("confidence_adjustment", 0.0))
         base["source_confidence"] = round(1.0 + adj, 2)
-        base["has_segmentation_mask"] = True
-        base["mask_s3_key"] = raw_label.get("mask_s3_key")
+        # Only claim a mask when there is actual polygon/segmentation data or an
+        # S3-keyed mask — avoids advertising a mask with a None key downstream.
+        mask_key = raw_label.get("mask_s3_key")
+        base["mask_s3_key"] = mask_key
+        base["segmentation"] = raw_label.get("segmentation", [])
+        base["has_segmentation_mask"] = bool(mask_key) or bool(raw_label.get("segmentation"))
         base["damage_zones"] = raw_label.get("inferred_zones") or ["full_body"]
 
     elif source_dataset == "kaggle_car_damage":

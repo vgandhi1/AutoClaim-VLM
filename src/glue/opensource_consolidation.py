@@ -24,11 +24,16 @@ from PIL import Image
 from opensourceingest.image_quality import (
     passes_quality_gates,
     perceptual_hash_bits,
+    phash_hamming,
     resize_square_jpeg,
 )
 from opensourceingest.normalize import normalize_record
 
 logger = logging.getLogger(__name__)
+
+# Two 64-bit pHashes within this Hamming distance are treated as near-duplicates
+# (JPEG recompression / minor brightness shifts differ by only a few bits).
+PHASH_NEAR_DUP_THRESHOLD = 8
 
 
 def process_manifest_row(
@@ -50,8 +55,10 @@ def process_manifest_row(
     ok, reason, metrics = passes_quality_gates(img)
     phash = perceptual_hash_bits(img)
     if seen_phashes is not None:
-        if phash in seen_phashes:
-            return {"status": "rejected", "reason": "duplicate_phash", **raw, **metrics}
+        # Near-duplicate match (Hamming), not just exact equality, so recompressed
+        # or slightly adjusted copies of the same image are caught too.
+        if any(phash_hamming(phash, h) <= PHASH_NEAR_DUP_THRESHOLD for h in seen_phashes):
+            return {"status": "rejected", "reason": "near_duplicate_phash", **raw, **metrics}
         seen_phashes.add(phash)
     if not ok:
         return {"status": "rejected", "reason": reason, **raw, **metrics}

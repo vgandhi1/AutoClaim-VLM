@@ -5,6 +5,10 @@ from __future__ import annotations
 import json
 from typing import Any
 
+# Only CarDD ships true human (COCO) annotations; the rest are programmatic
+# labels derived from folder names / dataset fields / metadata.
+_HUMAN_ANNOTATED_SOURCES = {"cardd"}
+
 
 def build_sagemaker_manifest(
     catalog_records: list[dict[str, Any]],
@@ -29,7 +33,9 @@ def build_sagemaker_manifest(
         "validation": labeled[t_end:v_end],
         "test": labeled[v_end:],
     }
-    subset = splits.get(split, labeled[:t_end])
+    if split not in splits:
+        raise ValueError(f"Unknown split {split!r}; must be one of {sorted(splits)}")
+    subset = splits[split]
 
     lines: list[str] = []
     for record in subset:
@@ -37,6 +43,8 @@ def build_sagemaker_manifest(
         if not processed_key:
             continue
         source_ref = f"s3://{processed_bucket}/{processed_key}"
+        source_dataset = record.get("source_dataset", "unknown")
+        human_annotated = "yes" if source_dataset in _HUMAN_ANNOTATED_SOURCES else "no"
         line = {
             "source-ref": source_ref,
             "vehicle-damage-label": {
@@ -48,9 +56,9 @@ def build_sagemaker_manifest(
             },
             "vehicle-damage-label-metadata": {
                 "confidence": record.get("source_confidence", 1.0),
-                "job-name": f"opensource-ingestion-{record.get('source_dataset', 'unknown')}",
+                "job-name": f"opensource-ingestion-{source_dataset}",
                 "class-name": record["damage_class"],
-                "human-annotated": "yes",
+                "human-annotated": human_annotated,
                 "creation-date": record.get("normalized_at", ""),
                 "type": "groundtruth/image-classification",
             },

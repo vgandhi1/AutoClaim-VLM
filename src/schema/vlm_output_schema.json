@@ -9,8 +9,7 @@
     "damage_zones",
     "repair_estimate_usd",
     "total_loss_risk",
-    "etl_tags",
-    "pipeline_action"
+    "etl_tags"
   ],
   "properties": {
     "damage_class": {"type": "string"},
