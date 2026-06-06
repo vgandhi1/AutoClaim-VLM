@@ -1,0 +1,10 @@
+{
+  "damage_class": "Front Collision",
+  "severity": "MINOR",
+  "confidence": 0.92,
+  "damage_zones": ["front_bumper", "front_hood"],
+  "repair_estimate_usd": {"low": 400, "high": 1200},
+  "total_loss_risk": false,
+  "etl_tags": ["front_end"],
+  "pipeline_action": "AUTO_APPROVE"
+}

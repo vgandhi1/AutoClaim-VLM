@@ -21,19 +21,31 @@ def input_fn(request_body: str, content_type: str) -> dict:
     return json.loads(request_body)
 
 
-def predict_fn(input_data: dict, model: dict) -> dict:
-    """Return a schema-shaped placeholder until fine-tuned weights are wired."""
-    return {
+def _dev_analytical_record(input_data: dict, model: dict) -> dict:
+    """Schema-valid dev stub using hints until fine-tuned weights are wired."""
+    from claimlens.vlm_gate import route_vlm_output
+
+    record = {
         "damage_class": input_data.get("damage_class_hint", "Unknown"),
-        "severity": input_data.get("severity_hint", "MODERATE"),
-        "confidence": 0.5,
-        "damage_zones": input_data.get("damage_zones", []),
-        "repair_estimate_usd": {"low": 0, "high": 0},
-        "total_loss_risk": False,
-        "etl_tags": [],
+        "severity": str(input_data.get("severity_hint", "MODERATE")).upper(),
+        "confidence": float(input_data.get("confidence_hint", 0.5)),
+        "damage_zones": list(input_data.get("damage_zones", [])),
+        "repair_estimate_usd": input_data.get(
+            "repair_estimate_usd", {"low": 0, "high": 0}
+        ),
+        "total_loss_risk": bool(input_data.get("total_loss_risk", False)),
+        "etl_tags": list(input_data.get("etl_tags", [])),
         "pipeline_action": "FLAG_REVIEW",
         "model_id": model["model_id"],
+        "dev_mode": True,
     }
+    record["pipeline_action"] = route_vlm_output(record)
+    return record
+
+
+def predict_fn(input_data: dict, model: dict) -> dict:
+    """Dev analytical stub: hint-based JSON validated and routed through vlm_gate."""
+    return _dev_analytical_record(input_data, model)
 
 
 def output_fn(prediction: dict, accept: str) -> tuple:

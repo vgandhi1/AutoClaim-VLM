@@ -1,0 +1,48 @@
+{
+  "total": 5,
+  "schema_pass_rate": 1.0,
+  "routing_match_rate": 1.0,
+  "action_distribution": {
+    "AUTO_APPROVE": 1,
+    "QUEUE_FOR_REPAIR": 1,
+    "FLAG_REVIEW": 1,
+    "ROUTE_TO_ADJUSTER": 2
+  },
+  "rows": [
+    {
+      "name": "auto_approve_minor",
+      "schema_ok": true,
+      "action": "AUTO_APPROVE",
+      "expected": "AUTO_APPROVE",
+      "match": true
+    },
+    {
+      "name": "queue_moderate",
+      "schema_ok": true,
+      "action": "QUEUE_FOR_REPAIR",
+      "expected": "QUEUE_FOR_REPAIR",
+      "match": true
+    },
+    {
+      "name": "flag_review",
+      "schema_ok": true,
+      "action": "FLAG_REVIEW",
+      "expected": "FLAG_REVIEW",
+      "match": true
+    },
+    {
+      "name": "total_loss_override",
+      "schema_ok": true,
+      "action": "ROUTE_TO_ADJUSTER",
+      "expected": "ROUTE_TO_ADJUSTER",
+      "match": true
+    },
+    {
+      "name": "low_confidence_adjuster",
+      "schema_ok": true,
+      "action": "ROUTE_TO_ADJUSTER",
+      "expected": "ROUTE_TO_ADJUSTER",
+      "match": true
+    }
+  ]
+}
