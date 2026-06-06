@@ -12,6 +12,8 @@ from typing import Any
 from PIL import Image
 from tqdm import tqdm
 
+from opensourceingest.pathutil import is_safe_zip_member
+
 logger = logging.getLogger(__name__)
 
 
@@ -41,7 +43,17 @@ def download_archive(gdrive_file_id: str, dest_path: Path) -> None:
 def extract_tar_gz(archive: Path, dest_dir: Path) -> None:
     dest_dir.mkdir(parents=True, exist_ok=True)
     with tarfile.open(archive, "r:gz") as tar:
-        tar.extractall(dest_dir)
+        # Security: reject tar-slip members (absolute paths, "..") before extraction
+        safe_members = []
+        for member in tar.getmembers():
+            if not is_safe_zip_member(member.name):
+                logger.warning("Skipping unsafe tar member: %s", member.name)
+                continue
+            if member.islnk() or member.issym():
+                logger.warning("Skipping link member in tar: %s", member.name)
+                continue
+            safe_members.append(member)
+        tar.extractall(dest_dir, members=safe_members)
 
 
 def iter_compcars_records(
