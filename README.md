@@ -456,6 +456,23 @@ Full distributed trace propagated from Lambda ingest trigger → Glue → SageMa
 - [ ] Synthetic damage data generation (CompCars + CarDD mask overlay)
 - [ ] VIN-level fleet damage aggregation queries
 
+### Deferred — requires AWS + GPU
+
+These items need a live AWS account and/or GPU compute, so they sit outside the
+offline-testable core. Current code carries stubs/placeholders for each; the work
+below replaces them with real implementations.
+
+| Item | Current state | Entrypoint | Blocked on |
+|---|---|---|---|
+| **PaliGemma 3B LoRA fine-tune** | stub — writes `config.json` only, no Trainer/data loader | `src/sagemaker/train.py` | GPU (SageMaker training instance) |
+| **Real VLM inference** | stub — returns fixed `confidence 0.5` + `FLAG_REVIEW`, no model load | `src/sagemaker/inference.py` | GPU + fine-tuned checkpoint |
+| **Glue Spark operational jobs** | stub — init + log only, no Spark processing | `src/glue/` | AWS Glue runtime |
+| **Full Terraform stack** | minimal — 4 S3 buckets + public-access blocks only | `infrastructure/` | AWS account; expand to **SQS, SageMaker, Redshift, DynamoDB**, Lambda, IAM, Glue |
+
+> Offline-implementable follow-ups (schema validation in `vlm_gate.py`, pHash dedup,
+> safe tar extraction, `total_loss_risk` routing) are tracked separately and do **not**
+> require AWS or GPU.
+
 ---
 
 ## Local Development
