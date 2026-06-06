@@ -1,13 +1,15 @@
 <div align="center">
 
 <!-- Logo / Banner -->
-<img src="https://img.shields.io/badge/ClaimLens-VLM%20Damage%20Intelligence-0D1117?style=for-the-badge&labelColor=0D1117&color=00D4FF" alt="ClaimLens" height="40"/>
+<img src="https://img.shields.io/badge/AutoClaim--VLM-Damage%20Intelligence-0D1117?style=for-the-badge&labelColor=0D1117&color=00D4FF" alt="AutoClaim-VLM" height="40"/>
 
-# 🔍 ClaimLens
+# 🔍 AutoClaim-VLM
 
-### VLM-Powered Vehicle Damage Assessment Pipeline
+### VLM-Powered Vehicle Damage Assessment Pipeline — Insurance / Fleet Claims
 
 *From raw image to structured, routable damage intelligence — in under 90 seconds.*
+
+### ▶ [**Live presentation**](https://vgandhi1.github.io/AutoClaim-VLM/presentation.html) · [GitHub](https://github.com/vgandhi1/AutoClaim-VLM)
 
 #### Data & AI analytics highlights
 
@@ -43,22 +45,26 @@ Raw Image Upload  →  Glue Preprocessing  →  VLM Classification  →  Redshif
 
 ---
 
-## What is ClaimLens?
+## What is AutoClaim-VLM?
 
-**ClaimLens** is a production-grade, AWS-native **ETL + analytics-oriented** pipeline that ingests vehicle damage images from any source — mobile apps, dealer kiosks, IoT cameras — and produces structured, enterprise-ready damage assessments using a Vision Language Model (VLM). The same pipeline feeds **warehouse tables and operational metrics**, so claims volume, severity mix, confidence calibration, and stage latency can be monitored like any other **Data & AI** product.
+**AutoClaim-VLM** is an AWS-native **ETL + analytics-oriented** pipeline that ingests vehicle damage images from any source — mobile apps, dealer kiosks, IoT cameras — and produces structured, enterprise-ready damage assessments using a Vision Language Model (VLM). The same pipeline feeds **warehouse tables and operational metrics**, so claims volume, severity mix, confidence calibration, and stage latency can be monitored like any other **Data & AI** product.
 
 It replaces parts of the traditional 2–5 day human adjuster review cycle with a sub-90-second automated path that outputs typed JSON damage records directly routable to repair workflows, SAP ERP systems, and claims management platforms.
 
 ### Key Numbers
 
-| Metric | Value |
+> **Design targets / projected**, not yet measured. Fine-tuning and end-to-end
+> load runs are on the roadmap (see Development Roadmap); these are the SLAs the
+> architecture is sized for, not benchmarked results.
+
+| Metric | Target (projected) |
 |---|---|
-| End-to-end latency (p50) | **< 45 seconds** |
-| Throughput | **10,000+ images / day** (autoscaling) |
-| VLM classification accuracy | **> 94%** (fine-tuned PaliGemma 3B) |
-| Cost per image assessed | **~$0.004** |
-| Training corpus | **~160,000 images** (CompCars + CarDD + Kaggle + HuggingFace) |
-| Human adjuster equivalent cost | $45–$120 per assessment |
+| End-to-end latency (p50) | < 45 seconds |
+| Throughput | 10,000+ images / day (autoscaling) |
+| VLM classification accuracy | > 94% (target, fine-tuned PaliGemma 3B) |
+| Cost per image assessed | ~$0.004 |
+| Training corpus | ~160,000 images (CompCars + CarDD + Kaggle + HuggingFace) |
+| Human adjuster equivalent cost (baseline) | $45–$120 per assessment |
 
 ---
 
@@ -66,7 +72,7 @@ It replaces parts of the traditional 2–5 day human adjuster review cycle with 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                              CLAIMLENS PIPELINE                             │
+│                            AUTOCLAIM-VLM PIPELINE                          │
 │                                                                             │
 │  SOURCES          INGEST              TRANSFORM           CLASSIFY          │
 │  ─────────        ──────              ─────────           ────────          │
@@ -138,7 +144,7 @@ This output is validated against a JSON Schema (draft-07) before any downstream 
 
 ## Open Source Training Corpus
 
-ClaimLens fine-tunes PaliGemma 3B on a consolidated corpus of ~160,000 vehicle images from five open source datasets, normalized into a single canonical label schema.
+AutoClaim-VLM is designed to fine-tune PaliGemma 3B on a consolidated corpus of ~160,000 vehicle images from five open source datasets, normalized into a single canonical label schema. (Ingestion + normalization code is implemented; the fine-tuning run itself is on the roadmap.)
 
 | Dataset | Images | Labels | Role |
 |---|---|---|---|
@@ -148,7 +154,7 @@ ClaimLens fine-tunes PaliGemma 3B on a consolidated corpus of ~160,000 vehicle i
 | [Kaggle Car Damage](https://www.kaggle.com/datasets/anujms/car-damage-detector) | ~1,800 | Minor / Moderate / Severe | Severity label mapping |
 | [HuggingFace VDD](https://huggingface.co/datasets/keremberke/vehicle-damage-detection) | ~3,900 | 6 damage classes | Supplementary classification |
 
-**After deduplication + augmentation → ~600,000 training examples for SageMaker fine-tuning.**
+**Projected after deduplication + augmentation → ~600,000 training examples for SageMaker fine-tuning.**
 
 > All open source datasets are used for model training only (non-commercial academic license).
 > Production inference runs exclusively on real operational claims data.
@@ -290,8 +296,8 @@ docker >= 24.x
 ### 1 — Clone & Configure
 
 ```bash
-git clone https://github.com/vgandhi1/claimlens.git
-cd claimlens
+git clone https://github.com/vgandhi1/AutoClaim-VLM.git
+cd AutoClaim-VLM
 
 cp infrastructure/variables.tf.example infrastructure/variables.tf
 # Edit variables.tf with your AWS account ID, region, and resource names
@@ -534,15 +540,15 @@ Open source datasets used for VLM fine-tuning are subject to their respective ac
 
 ## Citation
 
-If you reference ClaimLens in research or portfolio work:
+If you reference AutoClaim-VLM in research or portfolio work:
 
 ```bibtex
-@misc{claimlens2026,
-  title   = {ClaimLens: VLM-Powered Vehicle Damage Assessment ETL Pipeline},
+@misc{autoclaimvlm2026,
+  title   = {AutoClaim-VLM: VLM-Powered Vehicle Damage Assessment ETL Pipeline},
   author  = {Vinay},
   year    = {2026},
-  url     = {https://github.com/vgandhi1/claimlens},
-  note    = {AWS-native ETL pipeline with PaliGemma 3B fine-tuned on CompCars + CarDD}
+  url     = {https://github.com/vgandhi1/AutoClaim-VLM},
+  note    = {AWS-native ETL pipeline with PaliGemma 3B for insurance/fleet claims}
 }
 ```
 
